@@ -4,8 +4,8 @@ import { FC } from 'react'
 
 
 const page: FC= () => {
-  return <main className='mt-8'>
-    <h2>Add a friend</h2>
+  return <main className='px-2 mt-8'>
+    <h2 className='text-xl font-bold'>Add a friend</h2>
     <AddFriendButton />
     </main>
 }
