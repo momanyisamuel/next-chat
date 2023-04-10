@@ -1,7 +1,7 @@
 import { FC, ButtonHTMLAttributes } from "react";
 import { cva, VariantProps } from "class-variance-authority";
 import { Loader2 } from "lucide-react";
-import { cn } from "@/lib/utlis";
+import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
   "active:scale-95 inline-flex items-center justify-center rounded-md text-sm font-medium transition-color focus:outline-none focus:ring-2 focus:ring-slate-400 focus: ring-offset-2 disabled:opacity-50 disabled:pointer-events-none",
@@ -16,6 +16,10 @@ const buttonVariants = cva(
         sm: "h-9 px-2",
       },
     },
+    defaultVariants: {
+      variant: "default",
+      size: "default"
+    }
   }
 );
 

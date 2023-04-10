@@ -15,7 +15,7 @@ const getGoogleCredentials = () => {
   }
 
   if (!clientSecret || clientSecret.length === 0) {
-    throw new Error("Missing GOOGLE_CLIENT_ID");
+    throw new Error("Missing GOOGLE_CLIENT_SECRET");
   }
 
   return { clientId, clientSecret };
@@ -38,7 +38,6 @@ export const authOptions: NextAuthOptions = {
   callbacks:{
     async jwt ({ token, user }) {
         const dbUser = (await db.get(`user:${token.id}`)) as User | null;
-
         if(!dbUser) {
             token.id = user!.id;
             return token;
@@ -51,7 +50,6 @@ export const authOptions: NextAuthOptions = {
             picture:dbUser.image
         }
     },
-
     async session({ session, token }) {
         if(token) {
             session.user.id = token.id
@@ -59,7 +57,6 @@ export const authOptions: NextAuthOptions = {
             session.user.email = token.email
             session.user.image = token.picture
         }
-
         return session
     },
     redirect() {
