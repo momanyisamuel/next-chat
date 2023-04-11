@@ -1,5 +1,7 @@
+import FriendRequestsSidebarOption from "@/components/FriendRequestsSidebarOption";
 import { Icon, Icons } from "@/components/Icons";
 import SignOutButton from "@/components/SignOutButton";
+import { fetchRedis } from "@/helpers/redis";
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import Image from "next/image";
@@ -25,6 +27,13 @@ const sidebarOptions: SidebarOption[] = [
 const Layout = async ({ children }: LayoutProps) => {
   const session = await getServerSession(authOptions);
   if (session) notFound;
+
+  const requestCount = (
+    await fetchRedis(
+      "smembers",
+      `user:${session?.user.id}:incoming_friend_requests`
+    ) as User[]
+  ).length;
   return (
     <div className="flex w-full h-screen">
       <div className="flex flex-col h-full max-w-xs px-6 overflow-y-auto bg-white border-r border-gray-300 grow gap-y-5">
@@ -60,6 +69,14 @@ const Layout = async ({ children }: LayoutProps) => {
                 })}
               </ul>
             </li>
+
+            <li className="mt-2 -mx-2 space-y-1">
+              <FriendRequestsSidebarOption
+                sessionId={session?.user.id}
+                initialCount={requestCount}
+              />
+            </li>
+
             <li className="flex items-center mt-auto -mx-6">
               <div className="flex items-center flex-1 px-6 py-3 text-sm font-semibold leading-6 text-gray-900 gap-x-4">
                 <div className="relative w-8 h-8 bg-gray-50">
@@ -69,15 +86,17 @@ const Layout = async ({ children }: LayoutProps) => {
                     className="rounded-full"
                     src={session?.user.image || ""}
                     alt="Your profile picture"
-                  /> 
+                  />
                 </div>
                 <span className="sr-only">Your Profile</span>
                 <div className="flex flex-col">
                   <span aria-hidden="true">{session?.user.name}</span>
-                  <span className="text-xs text-zinc-400" aria-hidden="true">{session?.user.email}</span>
+                  <span className="text-xs text-zinc-400" aria-hidden="true">
+                    {session?.user.email}
+                  </span>
                 </div>
               </div>
-              
+
               <SignOutButton className="h-full aspect-square" />
             </li>
           </ul>
